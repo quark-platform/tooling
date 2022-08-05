@@ -12,7 +12,7 @@
   "author": "",
   "license": "MPL-2.0",
   "devDependencies": {
-    "tsconfig": "workspace:*",
+    "tsconfig": "workspace:0.0.0",
     "typescript": "^4.7.4"
   }
 }
