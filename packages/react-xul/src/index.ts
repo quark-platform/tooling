@@ -1,4 +1,4 @@
-/// <reference path="jsx.d.ts" />
+/// <reference path="./jsx.d.ts" />
 
 import { diff } from 'deep-object-diff'
 import Reconciler, { Fiber, HostConfig, OpaqueHandle } from 'react-reconciler'
@@ -259,7 +259,7 @@ export function injectDevTools() {
   const devTools = renderer.injectIntoDevTools({
     bundleType: 1,
     rendererPackageName: 'react-xul-renderer',
-    version: '18.0.15',
+    version: '1.0.0',
   })
   console.log(devTools)
 }

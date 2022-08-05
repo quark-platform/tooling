@@ -1,8 +1,9 @@
 {
   "name": "react-xul",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.0",
+  "description": "A react renderer for XUL elements",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -10,7 +11,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "devDependencies": {
     "@types/node": "^18.6.4",
     "ts-node": "^10.9.1",
