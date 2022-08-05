@@ -1,3 +1,5 @@
+/// <reference path="jsx.d.ts" />
+
 import { diff } from 'deep-object-diff'
 import Reconciler, { Fiber, HostConfig, OpaqueHandle } from 'react-reconciler'
 import {
