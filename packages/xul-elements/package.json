@@ -1,0 +1,22 @@
+{
+  "name": "xul-elements",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "typescript": "^4.7.4"
+  },
+  "files": [
+    "global.d.ts",
+    "dist/**"
+  ]
+}
