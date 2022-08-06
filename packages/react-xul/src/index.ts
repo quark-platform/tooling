@@ -260,7 +260,7 @@ export function injectDevTools() {
   const devTools = renderer.injectIntoDevTools({
     bundleType: 1,
     rendererPackageName: 'react-xul-renderer',
-    version: '1.0.0',
+    version: '0.0.1',
   })
   console.log(devTools)
 }
