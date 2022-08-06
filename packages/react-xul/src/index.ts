@@ -8,6 +8,7 @@ import {
   xulElements,
   XULElementsName,
 } from 'xul-elements'
+import { toKebabCase } from './utils'
 
 type Type = XULElementsName | string
 type Props = { [key: string]: any }
@@ -104,7 +105,7 @@ const hostConfig: HostConfig<
       if (propName == 'style') {
         let style = ''
         for (const styleProp in props[prop]) {
-          style += `${styleProp}: ${props[prop][styleProp]};`
+          style += `${toKebabCase(styleProp)}: ${props[prop][styleProp]};`
         }
 
         instance.setAttribute('style', style)
