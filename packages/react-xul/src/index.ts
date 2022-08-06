@@ -8,7 +8,7 @@ import {
   xulElements,
   XULElementsName,
 } from 'xul-elements'
-import { toKebabCase } from './utils'
+import { toKebabCase } from './utils.js'
 
 type Type = XULElementsName | string
 type Props = { [key: string]: any }
