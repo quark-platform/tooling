@@ -35,7 +35,7 @@ function applyProp(
   instance: Element,
   props: Props,
   prop: string,
-  isOverwriting = false
+  oldProps?: Props
 ): boolean {
   // Everything that we should not handle goes here
   if (prop == 'children') return false
@@ -44,8 +44,8 @@ function applyProp(
   if (typeof props[prop] === 'function') {
     const eventName = prop.replace('on', '').toLowerCase()
 
-    if (isOverwriting) {
-      instance.removeEventListener(eventName, props[prop])
+    if (oldProps) {
+      instance.removeEventListener(eventName, oldProps[prop])
     }
 
     instance.addEventListener(eventName, props[prop])
@@ -184,7 +184,7 @@ const hostConfig: HostConfig<
         continue
       }
 
-      applyProp(instance, nextProps, updated, true)
+      applyProp(instance, nextProps, updated, prevProps)
     }
   },
   removeChild(parentInstance, child) {
