@@ -25,6 +25,54 @@ type _ChildSet = any
 type TimeoutHandle = any
 type NoTimeout = number
 
+function getPropName(prop: string): string {
+  if (prop == 'className') return 'class'
+
+  return prop
+}
+
+function applyProp(
+  instance: Element,
+  props: Props,
+  prop: string,
+  isOverwriting = false
+): boolean {
+  // Everything that we should not handle goes here
+  if (prop == 'children') return false
+
+  // Handle event listeners
+  if (typeof props[prop] === 'function') {
+    const eventName = prop.replace('on', '').toLowerCase()
+
+    if (isOverwriting) {
+      instance.removeEventListener(eventName, props[prop])
+    }
+
+    instance.addEventListener(eventName, props[prop])
+    return true
+  }
+
+  // Handle styles
+  if (prop == 'style') {
+    let style = ''
+    for (const styleProp in props[prop]) {
+      style += `${toKebabCase(styleProp)}: ${props[prop][styleProp]};`
+    }
+
+    instance.setAttribute('style', style)
+    return true
+  }
+
+  instance.setAttribute(getPropName(prop).toLowerCase(), props[prop])
+  return true
+}
+
+function applyProps(instance: Element, props: Props) {
+  for (const prop in props) {
+    applyProp(instance, props, prop)
+  }
+}
+
 const hostConfig: HostConfig<
   Type,
   Props,
@@ -49,11 +97,19 @@ const hostConfig: HostConfig<
     hostContext: any,
     internalHandle: any
   ) {
+    let element
+
     if (xulElements.includes(type)) {
-      return (document as XULDocument).createXULElement(type as XULElementsName)
+      element = (document as XULDocument).createXULElement(
+        type as XULElementsName
+      )
+    } else {
+      element = document.createElement(type)
     }
 
-    return document.createElement(type)
+    applyProps(element, props)
+
+    return element
   },
   createTextInstance(text, rootContainer, hostContext, internalHandle) {
     return document.createTextNode(text)
@@ -86,34 +142,7 @@ const hostConfig: HostConfig<
     return true
   },
   commitMount(instance, type, props, internalInstanceHandle) {
-    for (const prop in props) {
-      if (typeof props[prop] === 'function') {
-        instance.addEventListener(
-          prop.replace('on', '').toLowerCase(),
-          props[prop]
-        )
-
-        continue
-      }
-
-      let propName = prop
-
-      // We should not handle children here
-      if (prop == 'children') continue
-      if (prop == 'className') propName = 'class'
-
-      if (propName == 'style') {
-        let style = ''
-        for (const styleProp in props[prop]) {
-          style += `${toKebabCase(styleProp)}: ${props[prop][styleProp]};`
-        }
-
-        instance.setAttribute('style', style)
-        continue
-      }
-
-      instance.setAttribute(propName.toLowerCase(), props[prop])
-    }
+    applyProps(instance, props)
   },
   detachDeletedInstance(node) {
     node.remove()
@@ -150,43 +179,12 @@ const hostConfig: HostConfig<
     internalHandle
   ) {
     for (const updated in updatePayload) {
-      let propName = updated
-
-      if (propName == 'className') {
-        propName = 'class'
-      }
-
       if (typeof updatePayload[updated] === 'undefined') {
-        instance.removeAttribute(propName)
+        instance.removeAttribute(getPropName(updated).toLowerCase())
         continue
       }
 
-      const newVal = nextProps[updated]
-
-      if (typeof newVal === 'function') {
-        instance.removeEventListener(
-          propName.replace('on', '').toLowerCase(),
-          prevProps[updated]
-        )
-        instance.addEventListener(
-          propName.replace('on', '').toLowerCase(),
-          newVal
-        )
-
-        continue
-      }
-
-      if (propName == 'style') {
-        let style = ''
-        for (const styleProp in nextProps[updated]) {
-          style += `${styleProp}: ${nextProps[updated][styleProp]};`
-        }
-
-        instance.setAttribute('style', style)
-        continue
-      }
-
-      instance.setAttribute(propName.toLowerCase(), newVal)
+      applyProp(instance, nextProps, updated, true)
     }
   },
   removeChild(parentInstance, child) {
