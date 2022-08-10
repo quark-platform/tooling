@@ -1,6 +1,6 @@
 {
   "name": "react-xul",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A react renderer for XUL elements",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
