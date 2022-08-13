@@ -1,13 +1,14 @@
 /// <reference path="./jsx.d.ts" />
 
 import { diff } from 'deep-object-diff'
-import Reconciler, { Fiber, HostConfig, OpaqueHandle } from 'react-reconciler'
+import Reconciler, { Fiber, HostConfig } from 'react-reconciler'
 import {
   XULDocument,
   XULElement,
   xulElements,
   XULElementsName,
 } from 'xul-elements'
+import { getEventName, polyfillEvent } from './events.js'
 import { toKebabCase } from './utils.js'
 
 type Type = XULElementsName | string
@@ -27,6 +28,7 @@ type NoTimeout = number
 
 function getPropName(prop: string): string {
   if (prop == 'className') return 'class'
+  if (prop == 'defaultValue') return 'value'
 
   return prop
 }
@@ -42,13 +44,18 @@ function applyProp(
 
   // Handle event listeners
   if (typeof props[prop] === 'function') {
-    const eventName = prop.replace('on', '').toLowerCase()
-
-    if (oldProps) {
-      instance.removeEventListener(eventName, oldProps[prop])
+    // Whilst I **could** use addEventListener, it would also create a memory
+    // leak that would be a mess to work around. Instead, we can just assign to
+    // the event properties and hope that noone else tries to override it
+    // elsewhere
+    //
+    // This wouldn't be a problem if we didn't have to polyfill events to
+    // support libraries made for old versions of React, but oh well I guess
+    ;(instance as any)[getEventName(prop)] = (e: any) => {
+      console.log(getEventName(prop), e)
+      props[prop](polyfillEvent(e))
     }
 
-    instance.addEventListener(eventName, props[prop])
     return true
   }
 
@@ -200,7 +207,7 @@ const hostConfig: HostConfig<
     return null
   },
   getChildHostContext(parentHostContext, type, rootContainer) {
-    return null
+    return parentHostContext
   },
 
   // Performance stuff that I do not care about at the moment
