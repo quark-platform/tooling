@@ -52,7 +52,6 @@ function applyProp(
     // This wouldn't be a problem if we didn't have to polyfill events to
     // support libraries made for old versions of React, but oh well I guess
     ;(instance as any)[getEventName(prop)] = (e: any) => {
-      console.log(getEventName(prop), e)
       props[prop](polyfillEvent(e))
     }
 
@@ -267,7 +266,6 @@ export function injectDevTools() {
     rendererPackageName: 'react-xul-renderer',
     version: '0.0.3',
   })
-  console.log(devTools)
 }
 
 export function render(component: any, container: HTMLElement | XULElement) {
