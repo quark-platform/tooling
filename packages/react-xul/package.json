@@ -1,6 +1,6 @@
 {
   "name": "react-xul",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A react renderer for XUL elements",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -9,8 +9,12 @@
     "build": "tsc",
     "createElementTypes": "node --loader ts-node/esm ./scripts/createElementTypes.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "xul",
+    "react",
+    "react-renderer"
+  ],
+  "author": "TrickyPR",
   "license": "MPL-2.0",
   "devDependencies": {
     "@types/node": "^18.6.4",
